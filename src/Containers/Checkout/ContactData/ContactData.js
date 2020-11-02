@@ -3,7 +3,8 @@ import Button from "../../../Components/UI/Button/Button";
 import Css from "../ContactData/ContactData.module.css";
 import Axios from "../../../Axios-order";
 import Spinner from "../../../Components/UI/Spinner/Spinner.js";
-import { withRouter } from "react-router";        
+import { withRouter } from "react-router";    
+import Input from '../../../Components/UI/Input/Input'    
 
 class ContactData extends Component {
   state = {
@@ -58,20 +59,20 @@ class ContactData extends Component {
     if (!this.state.showLoadingModal) {
       dynamicDiv = (
         <form>
-          <input
-            className={Css.Input}
+          <Input
+           inputtype="input"
             type="text"
             name="name"
             placeholder="Enter name"
           />
-          <input
-            className={Css.Input}
+          <Input
+          inputtype="input"
             type="email"
             name="name"
             placeholder="Enter email"
           />
-          <input
-            className={Css.Input}
+          <Input
+          inputtype="input"
             type="text"
             name="name"
             placeholder="Enter address"
