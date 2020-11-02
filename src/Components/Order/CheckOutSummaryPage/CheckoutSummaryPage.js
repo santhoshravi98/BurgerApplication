@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../../UI/Button/Button.js";
 import Burger from "../../Burger/Burger.js";
 import CheckoutSummaryPageCss from "../CheckOutSummaryPage/CheckoutSummaryPage.module.css";
+//Sample CheckIn
 const CheckoutSummaryPage = (props) => {
   return (
     <div className={CheckoutSummaryPageCss.CheckoutSummaryPage}>
