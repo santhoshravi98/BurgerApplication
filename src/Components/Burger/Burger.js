@@ -12,7 +12,7 @@ const Burger = (props) => {
        })
    });
    let hasNoIngredients = sampleArray.every(function(e){
-       return e == 0;
+       return e === 0;
    })
    if(hasNoIngredients)
    {

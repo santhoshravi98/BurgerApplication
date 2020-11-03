@@ -73,7 +73,7 @@ class BurgerBuilder extends Component
             ingredientsCount+=ingredientsArray[i];
         }
         console.log("count" + ingredientsCount);
-        let disableOrderButtonBool = (ingredientsCount == 0) ? true: false;
+        let disableOrderButtonBool = (ingredientsCount === 0) ? true: false;
         this.setState({
             disableOrderButton :  disableOrderButtonBool
         })

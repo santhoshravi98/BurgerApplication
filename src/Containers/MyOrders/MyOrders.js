@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import MyOrderSummary from "../../Components/Order/MyOrderSummary/MyOrderSummary";
-import Spinner from "../../Components/UI/Spinner/Spinner.js";
 import Axios from "../../Axios-order";
-import { MemoryRouter } from "react-router-dom";
 class MyOrders extends Component {
   state = {
     ingFromDb: [],

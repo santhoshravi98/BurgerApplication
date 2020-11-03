@@ -5,7 +5,7 @@ import Aux from '../../../HOC/AuxFolder/Auxillary.js'
 class Modal extends Component {
     shouldComponentUpdate(nextProps,nextState)
     {
-        return nextProps.showModal !== this.props.showModal || nextProps.children != this.props.children
+        return nextProps.showModal !== this.props.showModal || nextProps.children !== this.props.children
     }
     componentDidUpdate(){
         console.log("Model Component Updated");

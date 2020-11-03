@@ -1,7 +1,6 @@
 import React from 'react'
 import Css from '../MyOrderSummary/MyOrderSummary.module.css'
 const MyOrderSummary = (props) => {
-const ingArray = [];
 let dynamicDiv = Object.keys(props.info).map((e) => {
 return <span key={e}>Name : {e}, Count of Ingredients : {props.info[e]} <br></br></span>
 })
