@@ -22,5 +22,11 @@ box-sizing: border-box;
 }
 .InputElement:focus {
 outline: none;
-background-color: hotpink;
+background-color: rgb(128, 241, 128);
+}
+
+.invalid
+{
+  border:1px solid red;
+  background-color: rgb(235, 123, 123);
 }

@@ -8,14 +8,93 @@ import Input from '../../../Components/UI/Input/Input'
 
 class ContactData extends Component {
   state = {
-    name: "",
-    email: "",
-    address: {
-      street: "",
-      city: "",
+    orderForm:{
+      name:{
+        elementType:'input',
+        elementConfig:{
+          type:'text',
+          placeholder:'Enter Name'
+        },
+        value:'',
+        validationRules:{
+          required:true
+        },
+        validationPassed : false
+      },
+      Email:{
+        elementType:'input',
+        elementConfig:{
+          type:'text',
+          placeholder:'Enter Email'
+        },
+        value:'',
+        validationRules:{
+          required:true
+        },
+        validationPassed : false
+      },
+      Address:{
+        elementType:'input',
+        elementConfig:{
+          type:'text',
+          placeholder:'Enter Address'
+        },
+        value:'',
+        validationRules:{
+          required:true
+        },
+        validationPassed : false
+      },
+      Zip:{
+        elementType:'input',
+        elementConfig:{
+          type:'text',
+          placeholder:'Enter ZipCode'
+        },
+        value:'',
+        validationRules:{
+          length:5
+        },
+        validationPassed : false
+      },
+      Country:{
+        elementType:'input',
+        elementConfig:{
+          type:'text',
+          placeholder:'Enter Country'
+        },
+        value:'',
+        validationRules:{
+          required:true
+        },
+        validationPassed : false
+      },
+      Delivery:{
+        elementType:'select',
+        elementConfig:{
+          label:'Select the Delivery Method',
+         options:[
+           {value:'fastest',displayValue:'fastest'},
+           {value:'cheapest',displayValue:'cheapest'}
+         ]
+        },
+        value:''
+      },
     },
     showLoadingModal: false,
   };
+
+  checkValidation = (value,rule) => {
+    let validationPassed = false;
+    if(rule.required && value.trim() !== '')
+    validationPassed = true;
+
+    else if(rule.length === 5 && value.length === 5)
+    validationPassed = true;
+
+    return validationPassed;
+  }
+
   buttonClickedHandler = (event) => {
     event.preventDefault();
     this.setState({
@@ -28,15 +107,17 @@ class ContactData extends Component {
         });
     return;
     }
+    let customerInfo = {};
+    for(let info in this.state.orderForm)
+    {
+      customerInfo[info] = this.state.orderForm[info].value;
+    }
     let postData = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
-      customer: {
-        name: "KIRAN POLLARD",
-        age: "17",
-        address: "sample address - POLLARD",
-      },
+      customer: customerInfo,
     };
+    console.log(postData);
     Axios.post("/orders.json", postData)
       .then((response) => {
         this.setState({
@@ -54,32 +135,48 @@ class ContactData extends Component {
         console.log("Data post error");
       });
   };
+  onChangeHandler = (event,id) => {
+    //console.log(event.target.value);
+    const formData = {
+      ...this.state.orderForm
+    }
+    const selectedOrderForm = {
+      ...formData[id]
+    };
+   selectedOrderForm.value = event.target.value;
+   selectedOrderForm.validationPassed = this.checkValidation(selectedOrderForm.value,selectedOrderForm.validationRules);
+   formData[id] = selectedOrderForm;
+   this.setState({
+     orderForm : formData
+   });
+   console.log(formData);
+  }
   render() {
     let dynamicDiv = null;
+    let inputElementsArray = [];
+    for(let i in this.state.orderForm)
+    {
+      inputElementsArray.push({
+        id:i,
+        configuration:this.state.orderForm[i]
+      });
+    }
     if (!this.state.showLoadingModal) {
       dynamicDiv = (
-        <form>
-          <Input
-           inputtype="input"
-            type="text"
-            name="name"
-            placeholder="Enter name"
-          />
-          <Input
-          inputtype="input"
-            type="email"
-            name="name"
-            placeholder="Enter email"
-          />
-          <Input
-          inputtype="input"
-            type="text"
-            name="name"
-            placeholder="Enter address"
-          />
+        <form onSubmit = {this.buttonClickedHandler}>
+          {inputElementsArray.map((iterator) => {
+           return <Input 
+            key={iterator.id} 
+            inputtype = {iterator.configuration.elementType}
+            value={iterator.configuration.value} 
+            elementConfig={iterator.configuration.elementConfig}
+            label={iterator.configuration.elementConfig.label}
+            ShowValidationError = {iterator.configuration.validationPassed}
+            changed={(event) => this.onChangeHandler(event,iterator.id)}
+            />
+          })}
           <Button
             buttonType="Success"
-            buttonClickMethod={this.buttonClickedHandler}
           >
             ORDER THE BURGER
           </Button>
