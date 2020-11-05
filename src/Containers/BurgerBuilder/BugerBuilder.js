@@ -1,67 +1,35 @@
 import React, { Component } from 'react'
 import Aux from '../../HOC/AuxFolder/Auxillary.js'
+import {connect} from 'react-redux'
 import Burger from '../../Components/Burger/Burger.js';
 import BuildControls from '../../Components/Burger/BuildControls/BuildControls.js';
 import Modal from '../../Components/UI/Modal/Modal.js';
 import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary.js';
 import Axios from '../../Axios-order'
 import LoadingModal from '../../Components/UI/Spinner/Spinner'
-const PRICES = {
-    Cheese :10,
-    Bacon:20,
-    Salad:30,
-    Meat :40
-}
+import * as ActionTypes from '../../Store/Actions'
+
 class BurgerBuilder extends Component
 {
     state = {
-        ingredientsState : null,
-        totalPrice : 50,
         disableOrderButton : true,
         showModal : false,
         showLoadingModal : false,
         apiError : false
     }
     componentDidMount() {
-        Axios.get("ing.json").then(response => {
-            this.setState({
-                ingredientsState : response.data
-            })
-        }).catch(error => {
-                this.setState({
-                    showLoadingModal : false,
-                    apiError : true
-                });
-        })
+        // Axios.get("ing.json").then(response => {
+        //     this.setState({
+        //         ingredientsState : response.data
+        //     })
+        // }).catch(error => {
+        //         this.setState({
+        //             showLoadingModal : false,
+        //             apiError : true
+        //         });
+        // })
     }
-    addIngredientHandler = (type) => {
-        const oldTypeCount = this.state.ingredientsState[type];
-        const updatedTypeCount = oldTypeCount + 1;
-        const newIngredientsState = {...this.state.ingredientsState};
-        newIngredientsState[type] = updatedTypeCount;
-        const newPrice = this.state.totalPrice +  PRICES[type];
-        this.setState({
-            ingredientsState:newIngredientsState,
-            totalPrice:newPrice
-        });
-        this.updateShouldDisableOrderButton(newIngredientsState);
-    }
-    removeIngredientHandler = (type) =>{
-        const oldTypeCount = this.state.ingredientsState[type];
-        if(oldTypeCount <= 0)
-        {
-            return;
-        }
-        const updatedTypeCount = oldTypeCount - 1;
-        const newIngredientsState = {...this.state.ingredientsState};
-        newIngredientsState[type] = updatedTypeCount;
-        const newPrice = this.state.totalPrice -  PRICES[type];
-        this.setState({
-            ingredientsState:newIngredientsState,
-            totalPrice:newPrice
-        });
-        this.updateShouldDisableOrderButton(newIngredientsState);
-    }
+
     updateShouldDisableOrderButton = (newIngredientsState) => {
         const ingredientsArray = Object.keys(newIngredientsState).map((ite) => {
             return newIngredientsState[ite];
@@ -74,9 +42,7 @@ class BurgerBuilder extends Component
         }
         console.log("count" + ingredientsCount);
         let disableOrderButtonBool = (ingredientsCount === 0) ? true: false;
-        this.setState({
-            disableOrderButton :  disableOrderButtonBool
-        })
+       return disableOrderButtonBool;
     }
 
     setShowModalOnOrderButtonClick = () => {
@@ -91,53 +57,16 @@ class BurgerBuilder extends Component
         })
     }
     continueToCheckoutMethod = () => {
-        // this.setState({
-        //     showLoadingModal : true
-        // });
-        // let postData = {
-        //     ingredients : this.state.ingredientsState,
-        //     price:this.state.totalPrice,
-        //     customer:{
-        //         name:"santhosh",
-        //         age:"17",
-        //         address:"sample address - SANTHOSH"
-        //     }
-        // }
-        // Axios.post("/orders.json",postData).then(response => {
-        //     this.setState({
-        //         showLoadingModal:false,
-        //         showModal:false
-        //     })
-        //     console.log(response);
-        //     console.log("Data posted sucesfully to google firebase - by santhosh");
-        // }).catch(error => {
-        //     this.setState({
-        //         showLoadingModal:false,
-        //         showModal:true,
-        //         apiError : true
-        //     })
-        //     console.log(error);
-        //     console.log("Data post error");
-        // });
-        let queryParams = [];
-        for(let i in this.state.ingredientsState)
-        {
-            queryParams.push(encodeURIComponent(i) + '='+encodeURIComponent(this.state.ingredientsState[i]));
-        }
-        queryParams.push('price='+this.state.totalPrice);
-        this.props.history.push({
-            pathname: '/checkout',
-            search:'?'+queryParams.join('&'),
-        });
+        this.props.history.push('/checkout');
     }
 render()
 {
     let DataForDisableLessButton = null;
     let newDataForDisableLessButton = null;
-    if(this.state.ingredientsState)
+    if(this.props.ing)
     {
-        DataForDisableLessButton = {...this.state.ingredientsState};
-        newDataForDisableLessButton = {...this.state.ingredientsState};
+        DataForDisableLessButton = {...this.props.ing};
+        newDataForDisableLessButton = {...this.props.ing};
   Object.keys(DataForDisableLessButton).map((ite) => {
       return (
         newDataForDisableLessButton[ite] = DataForDisableLessButton[ite] <= 0
@@ -155,12 +84,12 @@ render()
 //       DataForDisableLessButton[obj] = true;
 //   }
 let contentInsideModalDiv;
-if(this.state.ingredientsState){
+if(this.props.ing){
     contentInsideModalDiv = (
-    <OrderSummary ingredients = {this.state.ingredientsState}
+    <OrderSummary ingredients = {this.props.ing}
     refToCloseModalFunction = {this.hideModalOnBackdropClick}
     refToContinueCheckoutMethod = {this.continueToCheckoutMethod}
-   totalPrice={this.state.totalPrice}
+   totalPrice={this.props.price}
     /> )
     }
     else
@@ -172,17 +101,18 @@ if(this.state.showLoadingModal)
     contentInsideModalDiv = (<LoadingModal/>)
 }
 let contentDiv;
-if(this.state.ingredientsState)
+let enableOrDisableOrderButton = this.updateShouldDisableOrderButton(this.props.ing);
+if(this.props.ing)
 {
 contentDiv = (
     <Aux>
-    <Burger ingredients = {this.state.ingredientsState}/>
+    <Burger ingredients = {this.props.ing}/>
     <BuildControls 
-    totalPrice = {this.state.totalPrice}
-    refToAddMethod = {this.addIngredientHandler}
-    refToRemoveMethod = {this.removeIngredientHandler}
+    totalPrice = {this.props.price}
+    refToAddMethod = {this.props.addIng}
+    refToRemoveMethod = {this.props.removeIng}
     refToDisabledObject= {newDataForDisableLessButton}
-    refToDisableOrderButton = {this.state.disableOrderButton}
+    refToDisableOrderButton = {enableOrDisableOrderButton}
     refTosetShowModalOnOrderButtonClick = {this.setShowModalOnOrderButtonClick}
     />
     </Aux>
@@ -207,4 +137,16 @@ if(this.state.apiError)
     )
 }
 }
-export default BurgerBuilder;
+const mapStateToProps = (state) => {
+return {
+    ing : state.ingredientsState,
+    price:state.totalPrice
+}
+}
+const mapDispatchToProps = (dispatch) => {
+return {
+    addIng : (ingName) => dispatch({type:ActionTypes.ADD_INGREDIENT,value:ingName}),
+    removeIng : (ingName) => dispatch({type:ActionTypes.REMOVE_INGREDIENT,value:ingName})
+}
+}
+export default connect(mapStateToProps,mapDispatchToProps)(BurgerBuilder);

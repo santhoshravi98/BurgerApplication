@@ -5,6 +5,7 @@ import Axios from "../../../Axios-order";
 import Spinner from "../../../Components/UI/Spinner/Spinner.js";
 import { withRouter } from "react-router";
 import Input from "../../../Components/UI/Input/Input";
+import { connect } from "react-redux";
 
 class ContactData extends Component {
   state = {
@@ -85,7 +86,7 @@ class ContactData extends Component {
         },
         value: "fastest",
         validationRules: {
-          required : 'skipped'
+          required: "skipped",
         },
         validationPassed: true,
       },
@@ -97,7 +98,7 @@ class ContactData extends Component {
   checkValidation = (value, rule) => {
     let validationPassed = false;
 
-    if (rule.required === 'skipped') validationPassed = true;
+    if (rule.required === "skipped") validationPassed = true;
     else if (rule.required && value.trim() !== "") validationPassed = true;
     else if (rule.length === 5 && value.length === 5) validationPassed = true;
 
@@ -203,4 +204,10 @@ class ContactData extends Component {
     return <div className={Css.ContactData}>{dynamicDiv}</div>;
   }
 }
-export default withRouter(ContactData);
+const mapStateToProps = (state) => {
+  return {
+    ingredients: state.ingredientsState,
+    totalPrice: state.totalPrice,
+  };
+};
+export default connect(mapStateToProps)(withRouter(ContactData));
