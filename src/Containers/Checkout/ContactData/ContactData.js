@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import Button from "../../../Components/UI/Button/Button";
 import Css from "../ContactData/ContactData.module.css";
-import Axios from "../../../Axios-order";
 import Spinner from "../../../Components/UI/Spinner/Spinner.js";
 import { withRouter } from "react-router";
 import Input from "../../../Components/UI/Input/Input";
 import { connect } from "react-redux";
+import * as OrderActionCreator from "../../../Store/Actions/Index";
+
 
 class ContactData extends Component {
   state = {
@@ -91,7 +92,6 @@ class ContactData extends Component {
         validationPassed: true,
       },
     },
-    showLoadingModal: false,
     overallformValid: false,
   };
 
@@ -107,15 +107,6 @@ class ContactData extends Component {
 
   buttonClickedHandler = (event) => {
     event.preventDefault();
-    this.setState({
-      showLoadingModal: true,
-    });
-    if (this.props.totalPrice.length === 0) {
-      this.setState({
-        showLoadingModal: false,
-      });
-      return;
-    }
     let customerInfo = {};
     for (let info in this.state.orderForm) {
       customerInfo[info] = this.state.orderForm[info].value;
@@ -125,24 +116,9 @@ class ContactData extends Component {
       price: this.props.totalPrice,
       customer: customerInfo,
     };
-    console.log(postData);
-    Axios.post("/orders.json", postData)
-      .then((response) => {
-        this.setState({
-          showLoadingModal: false,
-        });
-        console.log(response);
-        console.log("Data posted sucesfully to google firebase - by santhosh");
-        this.props.history.push("/");
-      })
-      .catch((error) => {
-        this.setState({
-          showLoadingModal: false,
-        });
-        console.log(error);
-        console.log("Data post error");
-      });
+    this.props.postIng(postData);
   };
+
   onChangeHandler = (event, id) => {
     //console.log(event.target.value);
     const formData = {
@@ -168,7 +144,12 @@ class ContactData extends Component {
       overallformValid: formValid,
     });
   };
+
   render() {
+    if(this.props.purchaseCompleted)
+    {
+      window.location = '/';
+    }
     let dynamicDiv = null;
     let inputElementsArray = [];
     for (let i in this.state.orderForm) {
@@ -177,7 +158,7 @@ class ContactData extends Component {
         configuration: this.state.orderForm[i],
       });
     }
-    if (!this.state.showLoadingModal) {
+    if (!this.props.showLoadingModal) {
       dynamicDiv = (
         <form onSubmit={this.buttonClickedHandler}>
           {inputElementsArray.map((iterator) => {
@@ -206,8 +187,21 @@ class ContactData extends Component {
 }
 const mapStateToProps = (state) => {
   return {
-    ingredients: state.ingredientsState,
-    totalPrice: state.totalPrice,
+    ingredients: state.BurgerBuilderReducer.ingredientsState,
+    totalPrice: state.BurgerBuilderReducer.totalPrice,
+    showLoadingModal : state.OrderReducer.showLoadingModal,
+    purchaseCompleted : state.OrderReducer.purchaseCompleted
   };
 };
-export default connect(mapStateToProps)(withRouter(ContactData));
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postIng: (orderData) => {
+      dispatch(OrderActionCreator.postIngredients(orderData));
+    },
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(ContactData));
