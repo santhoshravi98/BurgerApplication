@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import MyOrderSummary from "../../Components/Order/MyOrderSummary/MyOrderSummary";
-import Axios from "../../Axios-order";
+import * as ActionCreators from "../../Store/Actions/Index";
+import { connect } from "react-redux";
 class MyOrders extends Component {
   state = {
     ingFromDb: [],
@@ -8,40 +9,31 @@ class MyOrders extends Component {
     loadingModal: true,
   };
   componentDidMount() {
-    Axios.get("orders.json")
-      .then((response) => {
-        let ingArray = [];
-        for(let i in response.data)
-        {
-          ingArray.push(
-          response.data[i]
-          );
-        }
-        console.log(ingArray);
-        this.setState({
-          ingFromDb : ingArray,
-          loadingModal: false,
-          apiError: false,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          loadingModal: false,
-          apiError: true,
-        });
-      });
+    this.props.getOrders();
   }
 
   render() {
-const dynamicDiv = this.state.ingFromDb.map((e) => {
-  return <MyOrderSummary key={e.price} info={e.ingredients} price={e.price}/>
-});
-   
-    return (
-     <div>
-  {dynamicDiv}
-     </div>
- )
+    let dynamicDiv = null;
+    if (this.props.ingFromDb) {
+      dynamicDiv = this.props.ingFromDb.map((e) => {
+        return (
+          <MyOrderSummary key={e.price} info={e.ingredients} price={e.price} />
+        );
+      });
+    }
+    return <div>{dynamicDiv}</div>;
+  }
 }
-}
-export default MyOrders;
+
+const mapStateToProps = (state) => {
+  return {
+    ingFromDb: state.OrderReducer.orders,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getOrders: () => dispatch(ActionCreators.fetchOrders()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(MyOrders);

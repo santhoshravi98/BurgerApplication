@@ -2,13 +2,13 @@ import * as ActionTypes from "../Actions/ActionTypes";
 let initialState = {
   showLoadingModal: false,
   orderHistory: [],
-  purchaseCompleted : false
+  purchaseCompleted: false,
 };
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.POST_INGREDIENTS_PRESUBMIT:
       return {
-        purchaseCompleted : false,
+        purchaseCompleted: false,
         ...state,
         showLoadingModal: true,
       };
@@ -19,7 +19,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         orderHistory: newArray,
         showLoadingModal: false,
-        purchaseCompleted : true
+        purchaseCompleted: true,
       };
     }
 
@@ -27,7 +27,18 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         showLoadingModal: false,
-        purchaseCompleted: true
+        purchaseCompleted: true,
+      };
+
+    case ActionTypes.FETCH_ORDERS_SUCCESS:
+      return {
+        ...state,
+        orders: action.value,
+      };
+
+    case ActionTypes.FETCH_ORDERS_FAILURE:
+      return {
+        ...state,
       };
 
     default:
