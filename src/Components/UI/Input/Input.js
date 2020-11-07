@@ -12,7 +12,7 @@ const Input = (props) => {
         break;
 
       case "Email":
-        validationError = <p>Email is Required</p>;
+        validationError = <p>Email Error</p>;
         break;
 
       case "Address":
@@ -25,6 +25,10 @@ const Input = (props) => {
 
       case "Country":
         validationError = <p>Country is Required</p>;
+        break;
+
+        case "Password":
+        validationError = <p>Password Error</p>;
         break;
 
       default:

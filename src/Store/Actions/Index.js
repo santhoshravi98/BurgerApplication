@@ -10,3 +10,6 @@ export {
   postIngredientsPreSubmit,
   fetchOrders
 } from "../Actions/OrderActionCreator";
+export {
+  authUser
+} from '../Actions/AuthActionCreator'
