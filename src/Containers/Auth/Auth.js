@@ -117,6 +117,15 @@ class Auth extends Component {
   };
 
   render() {
+    if(this.props.isAuthenticated)
+    {
+      if(this.props.totalPrice > 0)
+      {
+        this.props.history.push("/checkout");
+      }
+      else
+      this.props.history.push("/");
+    }
     let inputElementsArray = [];
     for (let i in this.state.orderForm) {
       inputElementsArray.push({
@@ -207,7 +216,9 @@ class Auth extends Component {
 const mapStateToProps = (state) => {
   return {
     showLoadingModal: state.AuthReducer.showloadingModal,
-    error: state.AuthReducer.error
+    error: state.AuthReducer.error,
+    isAuthenticated : state.AuthReducer.token !== null,
+    totalPrice : state.BurgerBuilderReducer.totalPrice
   };
 };
 

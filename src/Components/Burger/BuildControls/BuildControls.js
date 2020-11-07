@@ -1,6 +1,7 @@
 import React from 'react';
 import css from '../BuildControls/BuildControls.module.css';
 import BuildControl from './BuildControl/BuildControl.js';
+import {connect} from 'react-redux'
 const BuildControls = (props) => {
     let data = [
         {label:'Meat',type:'Meat'},
@@ -21,8 +22,13 @@ return (
                />
         })}
         <button className={css.OrderButton} disabled={props.refToDisableOrderButton}
-        onClick = {() => {props.refTosetShowModalOnOrderButtonClick()}}>ORDER BUTTON</button>
+        onClick = {() => {props.refTosetShowModalOnOrderButtonClick()}}> {props.isAuthenticated ? 'ORDER NOW' : 'Sign Up/Login To Order'}</button>
     </div>
 )
 }
-export default BuildControls;
+const mapStateToProps = (state) => {
+    return {
+        isAuthenticated : state.AuthReducer.token !== null
+    }
+}
+export default connect(mapStateToProps)(BuildControls);

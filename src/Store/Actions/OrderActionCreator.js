@@ -20,10 +20,10 @@ export const postIngredientsPreSubmit = () => {
   };
 };
 
-export const postIngredients = (postData) => {
+export const postIngredients = (postData,token) => {
   return (dispatch) => {
     dispatch(postIngredientsPreSubmit());
-    Axios.post("/orders.json", postData)
+    Axios.post("/orders.json?auth="+token, postData)
       .then((response) => {
         const orderInformation = {
           id: response.data.name,
@@ -51,9 +51,9 @@ export const fetchOrdersFailure = () => {
   };
 };
 
-export const fetchOrders = () => {
+export const fetchOrders = (token) => {
   return (dispatch) => {
-    Axios.get("orders.json")
+    Axios.get("orders.json?auth="+token)
       .then((response) => {
         let ingArray = [];
         for (let i in response.data) {

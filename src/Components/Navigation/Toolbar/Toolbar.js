@@ -13,7 +13,7 @@ return (
             <Logo/>
             </div>
             <nav className={ToolbarCss.DesktopOnly}>
-                <NavigationItems/>
+                <NavigationItems isAuthenticated = {props.isAuthenticated}/>
             </nav>
         </header>
 )

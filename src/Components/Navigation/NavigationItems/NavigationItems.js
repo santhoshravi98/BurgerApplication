@@ -5,8 +5,10 @@ const NavigationItems = (props) => {
     return (
         <ul className={NavigationItemsCss.NavigationItems}>
              <NavigationItem link="/" exact>Home</NavigationItem>
-             <NavigationItem link="/myorders">My Orders</NavigationItem>
-             <NavigationItem link="/auth">Authenticate</NavigationItem>
+             {props.isAuthenticated ? <NavigationItem link="/myorders">My Orders</NavigationItem>: null }
+             {!props.isAuthenticated ? 
+             <NavigationItem link="/auth">Authenticate</NavigationItem> :
+             <NavigationItem link="/logout">LogOut</NavigationItem> }
         </ul>
     )
 }

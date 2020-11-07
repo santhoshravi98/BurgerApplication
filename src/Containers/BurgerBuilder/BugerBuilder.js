@@ -35,9 +35,13 @@ class BurgerBuilder extends Component {
   };
 
   setShowModalOnOrderButtonClick = () => {
-    this.setState({
-      showModal: true,
-    });
+    if (!this.props.isAuthenticated) {
+      this.props.history.push("/auth");
+    } else {
+      this.setState({
+        showModal: true,
+      });
+    }
   };
 
   hideModalOnBackdropClick = () => {
@@ -135,6 +139,7 @@ const mapStateToProps = (state) => {
     ing: state.BurgerBuilderReducer.ingredientsState,
     price: state.BurgerBuilderReducer.totalPrice,
     apiError: state.BurgerBuilderReducer.apiError,
+    isAuthenticated: state.AuthReducer.token !== null,
   };
 };
 const mapDispatchToProps = (dispatch) => {

@@ -11,5 +11,6 @@ export {
   fetchOrders
 } from "../Actions/OrderActionCreator";
 export {
-  authUser
+  authUser,
+  authLogout
 } from '../Actions/AuthActionCreator'

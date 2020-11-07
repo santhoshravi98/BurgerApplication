@@ -116,7 +116,7 @@ class ContactData extends Component {
       price: this.props.totalPrice,
       customer: customerInfo,
     };
-    this.props.postIng(postData);
+    this.props.postIng(postData,this.props.token);
   };
 
   onChangeHandler = (event, id) => {
@@ -190,14 +190,15 @@ const mapStateToProps = (state) => {
     ingredients: state.BurgerBuilderReducer.ingredientsState,
     totalPrice: state.BurgerBuilderReducer.totalPrice,
     showLoadingModal : state.OrderReducer.showLoadingModal,
-    purchaseCompleted : state.OrderReducer.purchaseCompleted
+    purchaseCompleted : state.OrderReducer.purchaseCompleted,
+    token:state.AuthReducer.token
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    postIng: (orderData) => {
-      dispatch(OrderActionCreator.postIngredients(orderData));
+    postIng: (orderData,token) => {
+      dispatch(OrderActionCreator.postIngredients(orderData,token));
     },
   };
 };

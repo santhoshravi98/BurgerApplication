@@ -9,7 +9,7 @@ class MyOrders extends Component {
     loadingModal: true,
   };
   componentDidMount() {
-    this.props.getOrders();
+    this.props.getOrders(this.props.token);
   }
 
   render() {
@@ -28,12 +28,13 @@ class MyOrders extends Component {
 const mapStateToProps = (state) => {
   return {
     ingFromDb: state.OrderReducer.orders,
+    token:state.AuthReducer.token
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getOrders: () => dispatch(ActionCreators.fetchOrders()),
+    getOrders: (token) => dispatch(ActionCreators.fetchOrders(token)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MyOrders);
