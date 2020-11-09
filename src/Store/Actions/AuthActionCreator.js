@@ -23,6 +23,9 @@ export const authFailure = (authData) => {
 };
 
 export const authLogout = () => {
+  localStorage.removeItem("id");
+  localStorage.removeItem("token");
+  localStorage.removeItem("expiryDate");
   return {
     type: ActionTypes.AUTH_LOGOUT,
     error: null,
@@ -34,8 +37,8 @@ export const authLogout = () => {
 export const authLogOutUser = (timeOut) => {
   return (dispatch) => {
     setTimeout(() => {
-        dispatch(authLogout());
-    },timeOut*1000);
+      dispatch(authLogout());
+    }, timeOut * 1000);
   };
 };
 
@@ -53,6 +56,10 @@ export const authUser = (email, pass, isSignUp) => {
     };
     Axios.post(postUrl, authData)
       .then((response) => {
+        const expiryDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
+        localStorage.setItem("id", response.data.localId);
+        localStorage.setItem("token", response.data.idToken);
+        localStorage.setItem("expiryDate", expiryDate);
         console.log(response.data);
         dispatch(authSuccess(response.data));
         dispatch(authLogOutUser(response.data.expiresIn));
@@ -61,5 +68,30 @@ export const authUser = (email, pass, isSignUp) => {
         console.log(error);
         dispatch(authFailure(error));
       });
+  };
+};
+
+export const getAuthenticationInfoFromLocalStorageOrStore = () => {
+  return (dispatch) => {
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      dispatch(authLogout());
+    } else {
+      const expiryDate = new Date(localStorage.getItem("expiryDate"));
+      if (expiryDate <= new Date()) {
+        dispatch(authLogout());
+      } else {
+        var info = {
+          localId: id,
+          idToken: token,
+          expiryDate: expiryDate,
+        };
+        dispatch(authSuccess(info));
+        dispatch(
+          authLogOutUser((expiryDate.getTime() - new Date().getTime())/1000)
+        );
+      }
+    }
   };
 };

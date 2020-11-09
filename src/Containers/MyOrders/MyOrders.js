@@ -9,6 +9,7 @@ class MyOrders extends Component {
     loadingModal: true,
   };
   componentDidMount() {
+    if(this.props.token)
     this.props.getOrders(this.props.token);
   }
 

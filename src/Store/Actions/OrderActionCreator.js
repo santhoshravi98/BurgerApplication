@@ -23,6 +23,8 @@ export const postIngredientsPreSubmit = () => {
 export const postIngredients = (postData,token) => {
   return (dispatch) => {
     dispatch(postIngredientsPreSubmit());
+    if(token)
+    {
     Axios.post("/orders.json?auth="+token, postData)
       .then((response) => {
         const orderInformation = {
@@ -35,6 +37,7 @@ export const postIngredients = (postData,token) => {
       .catch((error) => {
         dispatch(postIngredientsFailure());
       });
+    }
   };
 };
 

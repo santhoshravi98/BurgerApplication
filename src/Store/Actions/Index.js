@@ -12,5 +12,6 @@ export {
 } from "../Actions/OrderActionCreator";
 export {
   authUser,
-  authLogout
+  authLogout,
+  getAuthenticationInfoFromLocalStorageOrStore
 } from '../Actions/AuthActionCreator'
