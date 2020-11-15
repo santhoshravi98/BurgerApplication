@@ -13,7 +13,7 @@ const SideDrawer = (props) => {
 return (
     <Aux>
     <BackDrop showBackdrop={props.showSideDrawer} refToCloseModalFunction={props.refToCloseSideDrawer}/>
-    <div className={sideDrawerCss.join(' ')}>
+    <div className={sideDrawerCss.join(' ')} onClick={props.refToCloseSideDrawer}>
         <div className={SideDrawerCss.Logo}>
         <Logo/>
         </div>
