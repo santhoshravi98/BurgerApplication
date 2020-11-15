@@ -54,9 +54,10 @@ export const fetchOrdersFailure = () => {
   };
 };
 
-export const fetchOrders = (token) => {
+export const fetchOrders = (token,userToken) => {
   return (dispatch) => {
-    Axios.get("orders.json?auth="+token)
+    const queryParams = '?auth='+token+'&orderBy="userToken"&equalTo="'+userToken+'"'
+    Axios.get("orders.json"+queryParams)
       .then((response) => {
         let ingArray = [];
         for (let i in response.data) {

@@ -10,7 +10,7 @@ class MyOrders extends Component {
   };
   componentDidMount() {
     if(this.props.token)
-    this.props.getOrders(this.props.token);
+    this.props.getOrders(this.props.token,this.props.userToken);
   }
 
   render() {
@@ -29,13 +29,14 @@ class MyOrders extends Component {
 const mapStateToProps = (state) => {
   return {
     ingFromDb: state.OrderReducer.orders,
-    token:state.AuthReducer.token
+    token:state.AuthReducer.token,
+    userToken:state.AuthReducer.id
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getOrders: (token) => dispatch(ActionCreators.fetchOrders(token)),
+    getOrders: (token,userToken) => dispatch(ActionCreators.fetchOrders(token,userToken)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MyOrders);

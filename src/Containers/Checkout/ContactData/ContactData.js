@@ -115,6 +115,7 @@ class ContactData extends Component {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       customer: customerInfo,
+      userToken : this.props.userToken
     };
     this.props.postIng(postData,this.props.token);
   };
@@ -191,7 +192,8 @@ const mapStateToProps = (state) => {
     totalPrice: state.BurgerBuilderReducer.totalPrice,
     showLoadingModal : state.OrderReducer.showLoadingModal,
     purchaseCompleted : state.OrderReducer.purchaseCompleted,
-    token:state.AuthReducer.token
+    token:state.AuthReducer.token,
+    userToken : state.AuthReducer.id
   };
 };
 
